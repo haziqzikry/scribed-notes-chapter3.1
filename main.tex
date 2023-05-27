@@ -1,0 +1,138 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{amsmath} % for mathematical symbols and equations
+\usepackage{tikz} % for drawing DFA and state diagram
+
+
+
+\title{Chapter 3 - Deterministic Finite Automata (DFA) and State Diagram}
+\author{
+  Mohamad Haziq Zikry Bin Mohammad Razak\\
+  Matric Number: A20EC0079
+  \and
+  Instructor's Name: Dr. Tarmizi Bin Adam\\
+}
+\date{May 2023}
+
+
+\begin{document}
+
+\maketitle
+
+
+
+\section{Deterministic Finite Automata (DFA)}
+
+A deterministic finite automaton (DFA) is a mathematical model or finite-state machine that recognizes a regular language. It consists of a finite set of states, a set of input symbols, a transition function that maps a state and an input symbol to a new state, an initial state, and a set of accepting states.
+
+Formally, a DFA is defined as a 5-tuple $M = (Q,\Sigma,\delta,q_0,F)$, where:
+
+\begin{itemize}
+\item $Q$ is a finite set of states.
+\item $\Sigma$ is a finite set of input symbols (the alphabet).
+\item $\delta: Q \times \Sigma \rightarrow Q$ is the transition function.
+\item $q_0 \in Q$ is the initial state.
+\item $F \subseteq Q$ is the set of accepting states.
+\end{itemize}
+
+A DFA accepts an input string $w = w_1w_2...w_n$ if there exists a sequence of states $r_0,r_1,...,r_n$ such that:
+
+\begin{enumerate}
+\item $r_0 = q_0$
+\item $r_i = \delta(r_{i-1},w_i)$ for $1 \leq i \leq n$
+\item $r_n \in F$
+\end{enumerate}
+
+In other words, starting from the initial state, the DFA reads each symbol of the input string and transitions to a new state based on the current state and the input symbol. If the final state is an accepting state, the input string is accepted by the DFA; otherwise, it is rejected.
+
+
+\section{State Diagrams}
+
+A state diagram is a graphical representation of a DFA, where each state is represented by a node and each transition is represented by a directed edge labeled with the input symbol. The initial state is indicated by an arrow pointing to it, and accepting states are indicated by double circles around the node.
+
+Here is an example state diagram for a DFA that recognizes the language of all strings over the alphabet ${0,1}$ that end with 01:
+
+\begin{center}
+\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2.5cm,semithick]
+\tikzstyle{every state}=[fill=white,draw=black,text=black]
+
+\node[state,initial] (q0) {$q_0$};
+\node[state] (q1) [right of=q0] {$q_1$};
+\node[state,accepting] (q2) [right of=q1] {$q_2$};
+
+\path (q0) edge [bend left] node {0} (q1)
+edge [loop above] node {1} (q0)
+(q1) edge [bend left] node {0} (q2)
+edge [bend left] node {1} (q0)
+(q2) edge [loop above] node {0,1} (q2);
+\end{tikzpicture}
+\end{center}
+
+In this example, the initial state is $q_0$, and the accepting state is $q_2$. The transition function is defined as follows:
+
+\begin{itemize}
+\item $\delta(q_0,0) = q_1$
+\item $\delta(q_0,1) = q_0$
+\item $\delta(q_1,0) = q_2$
+\item $\delta(q_1,1) = q_0$
+\item $\delta(q_2,0) = q_2$
+\item $\delta(q_2,1) = q_2$
+\end{itemize}
+
+This DFA recognizes the language ${w \in {0,1}^* : w \text{ ends with } 01}$.
+
+\section{DFA Tracing with State Diagrams}
+
+To trace a DFA for a given string, we start at the initial state $q_0$ and follow the transition function $\delta$ for each input symbol in the string. If we reach an accepting state after processing the entire string, then the DFA accepts the string. Otherwise, it rejects the string.
+
+Here is an example DFA that recognizes the language of all strings over the alphabet ${0,1}$ that contain an even number of 0's:
+
+\begin{center}
+\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2.5cm,semithick]
+\tikzstyle{every state}=[fill=white,draw=black,text=black]
+
+\node[state,initial] (q0) {$q_0$};
+\node[state,accepting] (q1) [right of=q0] {$q_1$};
+\node[state] (q2) [right of=q1] {$q_2$};
+\node[state,accepting] (q3) [right of=q2] {$q_3$};
+
+\path (q0) edge [loop above] node {1} (q0)
+edge [bend left] node {0} (q1)
+(q1) edge [bend left] node {0} (q0)
+edge [bend left] node {1} (q2)
+(q2) edge [bend left] node {0} (q3)
+edge [bend left] node {1} (q1)
+(q3) edge [loop above] node {0} (q3)
+edge [bend left] node {1} (q2);
+\end{tikzpicture}
+\end{center}
+
+To trace this DFA for the input string $010101$, we start at state $q_0$ and follow the transitions:
+
+\begin{itemize}
+\item $\delta(q_0,0) = q_1$
+\item $\delta(q_1,1) = q_2$
+\item $\delta(q_2,0) = q_3$
+\item $\delta(q_3,1) = q_2$
+\end{itemize}
+
+Since we end up in an accepting state $q_2$ after processing the entire input string, the DFA accepts the string $010101$.
+
+If we trace the same DFA for the input string $0001$, we start at state $q_0$ and follow the transitions:
+
+\begin{itemize}
+\item $\delta(q_0,0) = q_1$
+\item $\delta(q_1,0) = q_0$
+\item $\delta(q_0,0) = q_1$
+\item $\delta(q_1,1) = q_2$
+\end{itemize}
+
+Since we end up in a non-accepting state $q_2$ after processing the entire input string, the DFA rejects the string $0001$.
+
+\section{Conclusion}
+
+DFA are an important concept in computer science and are used in various applications, such as regular expression matching, lexical analysis, and parsing. By understanding the basics of DFA and their properties, we can design and analyze algorithms that use DFA to solve various problems.
+
+
+
+\end{document}
